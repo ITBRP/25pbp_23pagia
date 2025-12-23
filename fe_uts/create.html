@@ -14,6 +14,7 @@
             <div class="col-6 border border-secondary bg-light p-5">
                 <h3>Form Input Data Buku</h3>
                 <hr>
+                <div class="alert-success" role="alert"></div>
                 <form id="myForm" enctype="multipart/form-data">
                     <div class="form-group mb-3">
                         <label>Judul</label>
@@ -66,7 +67,31 @@
         $(document).on('submit', '#myForm', function(el){
             el.preventDefault();
             let dataForm = new FormData(this);
-            console.log(dataForm);
+            
+            $.ajax({
+                url: "http://localhost:800/www/2526_ganjil/25pbp_uts_23pagia/aldi/be/create.php",
+                type: "POST",
+                data: dataForm,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.invalid-feedback').empty();
+                    $('.is-invalid').removeClass('is-invalid');
+                },
+                success: function(res){
+                    $('.alert-success').addClass('alert').text(res.msg);
+                    $('#myForm').trigger('reset');
+                },
+                error: function(res){
+                    // responnya kita olah, dan tampilkan secara ui
+                    let resJson = res.responseJSON;
+                    
+                    Object.entries(resJson.errors).forEach(([key,val])=>{
+                        $('input[name='+key+']').addClass('is-invalid');
+                        $('#'+key).text(val);
+                    });
+                }
+            })
             
         })
 
