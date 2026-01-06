@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Form Edit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
 <body>
@@ -12,10 +12,11 @@
     <div class="container pt-5">
         <div class="row justify-content-center">
             <div class="col-6 border border-secondary bg-light p-5">
-                <h3>Form Input Data Buku</h3>
+                <h3>Form Edit Data Buku</h3>
                 <hr>
                 <div class="alert-success" role="alert"></div>
                 <form id="myForm" enctype="multipart/form-data">
+                    <input type="hidden" name="id">
                     <div class="form-group mb-3">
                         <label>Judul</label>
                         <input type="text" class="form-control" name="title">
@@ -61,13 +62,34 @@
     <!-- script FE ada disini -->
     <script>
 
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        
+        $.ajax({
+            url: "http://localhost:800/www/2526_ganjil/25pbp_uts_23pagia/aldi/be/select_by_id.php?id="+id,
+            type: "GET",
+            success: function(res){
+                $('input[name="id"]').val(res.data.id);
+                $('input[name="title"]').val(res.data.title);
+                $('input[name="author"]').val(res.data.author);
+                $('input[name="publisher"]').val(res.data.publisher);
+                $('input[name="published_year"]').val(res.data.published_year);
+                $('input[name="isbn"]').val(res.data.isbn);
+                
+            }
+        })
+
         $(document).on('submit', '#myForm', function(el){
             el.preventDefault();
             let dataForm = new FormData(this);
+            let id = $('input[name="id"]').val();
             
             $.ajax({
-                url: "http://localhost:800/www/2526_ganjil/25pbp_uts_23pagia/aldi/be/create.php",
+                url: "http://localhost:800/www/2526_ganjil/25pbp_uts_23pagia/aldi/be/update.php?id="+id,
                 type: "POST",
+                headers: {
+                    'X-HTTP-METHOD-OVERRIDE': 'PUT'
+                },
                 data: dataForm,
                 contentType: false,
                 processData: false,
@@ -76,7 +98,6 @@
                     $('.is-invalid').removeClass('is-invalid');
                 },
                 success: function(res){
-                    $('#myForm').trigger('reset');
                     $('.alert-success').addClass('alert').text(res.msg);
                 },
                 error: function(res){

@@ -12,6 +12,7 @@
         <div class="row justify-content-center">
             <div class="col-md">
                 <div class="alert-success" role="alert"></div>
+                <a href="create.html" class="btn btn-primary mb-2">Buat Data Baru</a>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="myTable">
                         <thead>
@@ -57,6 +58,7 @@
                                 <td><img src="${row.cover}" width="100" height="100" /></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-danger btn-hapus" id="${row.id}">Hapus</button>
+                                    <a href="edit.html?id=${row.id}" class="btn btn-success btn-sm">Edit</a>
                                 </td>
                             </tr>
                         `);
